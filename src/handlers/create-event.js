@@ -1,4 +1,4 @@
-import { putEvent } from "../data-layer/events.data-mapper.js";
+import { createEvent } from "../data-layer/events.data-mapper.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { validate } from "../utilities/validation.js";
@@ -32,7 +32,7 @@ export const handler = wrapHandler(async (event) => {
   const body = parseBody(event);
   const userId = getUserId();
 
-  await putEvent(body, userId);
+  await createEvent(body, userId);
 
   return assembleHandleResponse(201, {
     message: "Item created successfully!",

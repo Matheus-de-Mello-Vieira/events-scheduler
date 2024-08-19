@@ -46,11 +46,25 @@ export const getEvents = async (start, end, userId) => {
   return result.Items.map(dtoToModel);
 };
 
-export const putEvent = async (event, userId) => {
+export const createEvent = async (event, userId) => {
   const params = {
     TableName: tableName,
     Item: modelToDto(event, userId),
   };
-
+  
   return await getDynamoDB().putItem(params).promise();
+};
+
+export const putEvent = async (event, userId) => {};
+
+export const deleteEvent = async (startDateTime, userId) => {
+  const params = {
+    TableName: tableName,
+    Key: {
+      UserId: { S: userId },
+      StartDateTime: { S: startDateTime.toISOString() },
+    },
+  };
+
+  return await getDynamoDB().deleteItem(params).promise();
 };

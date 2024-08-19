@@ -58,8 +58,12 @@ functions:
     handler: src/handlers/delete-events.handler
     events:
       - httpApi:
-          path: /events
+          path: /events/{StartDateTime}
           method: delete
+          request: 
+          parameters: 
+             paths: 
+               StartDateTime: true
           
 resources:
   Resources:
