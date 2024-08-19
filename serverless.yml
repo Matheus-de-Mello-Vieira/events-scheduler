@@ -52,7 +52,7 @@ functions:
     handler: src/handlers/update-event.handler
     events:
       - httpApi:
-          path: /events
+          path: /events/{StartDateTime}
           method: put
   delete-events:
     handler: src/handlers/delete-events.handler
