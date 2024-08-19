@@ -68,12 +68,12 @@ resources:
       Properties:
         TableName: ${param:NODE_ENV}-events
         AttributeDefinitions:
-          - AttributeName: Month
+          - AttributeName: UserId
             AttributeType: S
           - AttributeName: StartDateTime
             AttributeType: S
         KeySchema:
-          - AttributeName: Month
+          - AttributeName: UserId
             KeyType: HASH
           - AttributeName: StartDateTime
             KeyType: RANGE

@@ -2,6 +2,7 @@ import { putEvent } from "../data-layer/events.data-mapper.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { validate } from "../utilities/validation.js";
+import { getUserId } from "../utilities/request.js";
 
 const bodySchema = {
   type: "object",
@@ -17,7 +18,7 @@ const bodySchema = {
 
 const parseBody = (event) => {
   const body = JSON.parse(event.body);
-  validate(body, bodySchema, 'body');
+  validate(body, bodySchema, "body");
 
   return {
     startDateTime: new Date(body.startDateTime),
@@ -29,8 +30,9 @@ const parseBody = (event) => {
 
 export const handler = wrapHandler(async (event) => {
   const body = parseBody(event);
+  const userId = getUserId();
 
-  await putEvent(body);
+  await putEvent(body, userId);
 
   return assembleHandleResponse(201, {
     message: "Item created successfully!",

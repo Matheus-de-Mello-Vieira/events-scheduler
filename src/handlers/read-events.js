@@ -2,12 +2,15 @@ import { getEvents } from "../data-layer/events.data-mapper.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { validate } from "../utilities/validation.js";
+import { getUserId } from "../utilities/request.js";
+
 const querySchema = {
   type: "object",
   properties: {
-    month: { type: "string", pattern: "^\\d{4}-\\d{2}$" },
+    start: { type: "string", format: "date" },
+    end: { type: "string", format: "date" },
   },
-  required: ["month"],
+  required: ["start", "end"],
   additionalProperties: false,
 };
 
@@ -17,14 +20,16 @@ const parseQuery = (event) => {
   validate(query, querySchema, "query");
 
   return {
-    month: query.month,
+    start: new Date(query.start),
+    end: new Date(query.end),
   };
 };
 
 export const handler = wrapHandler(async (event) => {
   const query = parseQuery(event);
+  const userId = getUserId();
 
-  const events = await getEvents(query.month);
+  const events = await getEvents(query.start, query.end, userId);
 
   return assembleHandleResponse(200, events);
 });

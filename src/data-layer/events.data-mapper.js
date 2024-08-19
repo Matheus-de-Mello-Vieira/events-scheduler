@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
 import config from "../config.js";
 
-const { env, region } = config;
+const { env } = config;
 
 const getDynamoDB = () => {
   return new AWS.DynamoDB({ apiVersion: "2012-08-10" });
@@ -9,22 +9,47 @@ const getDynamoDB = () => {
 
 const tableName = `${env}-events`;
 
-export const getEvents = async (month) => {
-  
-}
+const modelToDto = (model, userId) => {
+  const { startDateTime, title, description, endDateTime } = model;
 
-export const putEvent = async (event) => {
-  const { startDateTime, title, description, endDateTime } = event;
+  return {
+    UserId: { S: userId },
+    StartDateTime: { S: startDateTime.toISOString() },
+    EndDateTime: { S: endDateTime.toISOString() },
+    Title: { S: title },
+    Description: { S: description },
+  };
+};
 
+const dtoToModel = (dto) => {
+  return {
+    startDateTime: new Date(dto.StartDateTime.S),
+    endDateTime: new Date(dto.EndDateTime.S),
+    title: dto.Title.S,
+    description: dto.Description.S,
+  };
+};
+
+export const getEvents = async (start, end, userId) => {
+  var params = {
+    TableName: tableName,
+    KeyConditionExpression:
+      "UserId = :user_id AND StartDateTime BETWEEN :start AND :end",
+    ExpressionAttributeValues: {
+      ":user_id": { S: userId },
+      ":start": { S: start.toISOString().substring(0, 10) + "T00:00:00.000Z" },
+      ":end": { S: end.toISOString().substring(0, 10) + "T23:59:59.000Z" },
+    },
+  };
+
+  const result = await getDynamoDB().query(params).promise();
+  return result.Items.map(dtoToModel);
+};
+
+export const putEvent = async (event, userId) => {
   const params = {
     TableName: tableName,
-    Item: {
-      Month: { S: startDateTime.toISOString().substring(0, 7) },
-      StartDateTime: { S: startDateTime.toISOString() },
-      Title: { S: title },
-      Description: { S: description },
-      EndDateTime: { S: endDateTime.toISOString() },
-    },
+    Item: modelToDto(event, userId),
   };
 
   return await getDynamoDB().putItem(params).promise();
