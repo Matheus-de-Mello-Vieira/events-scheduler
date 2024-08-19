@@ -1,0 +1,82 @@
+org: matheusvieira
+app: events-scheduler
+service: events-scheduler
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+
+  region: ${param:AWS_REGION}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+       - dynamodb:Query
+       - dynamodb:Scan
+       - dynamodb:GetItem
+       - dynamodb:PutItem
+       - dynamodb:UpdateItem
+       - dynamodb:DeleteItem
+      Resource:
+        Fn::GetAtt:
+          - EventsTable
+          - Arn
+
+  environment:
+    NODE_ENV: ${param:NODE_ENV}
+
+stages:
+  dev:
+    params:
+      NODE_ENV: development
+      AWS_REGION: us-east-2
+  prd:
+    params:
+      NODE_ENV: production
+      AWS_REGION: us-east-1
+
+functions:
+  create-event:
+    handler: src/handlers/create-event.handler
+    events:
+      - httpApi:
+          path: /events
+          method: post
+  read-events:
+    handler: src/handlers/read-events.handler
+    events:
+      - httpApi:
+          path: /events
+          method: get
+  update-events:
+    handler: src/handlers/update-event.handler
+    events:
+      - httpApi:
+          path: /events
+          method: put
+  delete-events:
+    handler: src/handlers/delete-events.handler
+    events:
+      - httpApi:
+          path: /events
+          method: delete
+          
+resources:
+  Resources:
+    EventsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${param:NODE_ENV}-events
+        AttributeDefinitions:
+          - AttributeName: Month
+            AttributeType: S
+          - AttributeName: StartDateTime
+            AttributeType: S
+        KeySchema:
+          - AttributeName: Month
+            KeyType: HASH
+          - AttributeName: StartDateTime
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
