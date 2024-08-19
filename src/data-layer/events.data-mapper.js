@@ -1,10 +1,13 @@
 import AWS from "aws-sdk";
+import lodash from "lodash";
 import config from "../config.js";
 import {
   assembleExpressionAttributeValues,
   assembleUpdateExpression,
 } from "../utilities/dynamoDB.js";
+import { pickParcialBy } from "../utilities/general.js";
 
+const { identity } = lodash;
 const { env } = config;
 
 const getDynamoDB = () => {
@@ -21,13 +24,19 @@ const assembleKeyDto = (userId, startDateTime) => {
 };
 
 const modelToAttributesDto = (model) => {
-  const { title, description, endDateTime } = model;
-
-  return {
-    EndDateTime: { S: endDateTime.toISOString() },
-    Title: { S: title },
-    Description: { S: description },
-  };
+  return pickParcialBy(
+    model,
+    {
+      title: (title) => ({ S: title }),
+      description: (description) => ({ S: description }),
+      endDateTime: (endDateTime) => ({ S: endDateTime.toISOString() }),
+    },
+    {
+      title: "Title",
+      description: "Description",
+      endDateTime: "EndDateTime",
+    }
+  );
 };
 
 const modelToDto = (model, userId) => {
@@ -81,10 +90,12 @@ export const updateEvent = async (event, startDateTime, userId) => {
     ExpressionAttributeValues: assembleExpressionAttributeValues(attributesDto),
   };
 
+  console.log(params);
+
   return await getDynamoDB().updateItem(params).promise();
 };
 
-export const deleteEvent = async (startDateTime, userId) => {
+export const deleteEvent = async (userId, startDateTime) => {
   const params = {
     TableName: tableName,
     Key: assembleKeyDto(userId, startDateTime),

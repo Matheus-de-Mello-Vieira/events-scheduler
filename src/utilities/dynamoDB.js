@@ -1,3 +1,6 @@
+import lodash from "lodash";
+const { mapKeys } = lodash;
+
 export const assembleUpdateExpression = (updateDto) => {
   return Object.keys(updateDto)
     .reduce((accumulator, currentValue) => {
@@ -7,11 +10,5 @@ export const assembleUpdateExpression = (updateDto) => {
 };
 
 export const assembleExpressionAttributeValues = (updateDto) => {
-  const result = {};
-
-  Object.keys(updateDto).forEach(function (key, index) {
-    result[`:${key}`] = updateDto[key];
-  });
-
-  return result;
+  return mapKeys(updateDto, (value, key) => `:${key}`);
 };

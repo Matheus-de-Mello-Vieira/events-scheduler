@@ -27,7 +27,7 @@ export const handler = wrapHandler(async (event) => {
   const params = parseParams(event);
   const userId = getUserId();
 
-  const r = await deleteEvent(params.StartDateTime, userId)
+  const r = await deleteEvent(userId, params.StartDateTime)
   
   return assembleHandleResponse(200, {});
 });
