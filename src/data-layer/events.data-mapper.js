@@ -1,5 +1,9 @@
 import AWS from "aws-sdk";
 import config from "../config.js";
+import {
+  assembleExpressionAttributeValues,
+  assembleUpdateExpression,
+} from "../utilities/dynamoDB.js";
 
 const { env } = config;
 
@@ -9,15 +13,27 @@ const getDynamoDB = () => {
 
 const tableName = `${env}-events`;
 
-const modelToDto = (model, userId) => {
-  const { startDateTime, title, description, endDateTime } = model;
-
+const assembleKeyDto = (userId, startDateTime) => {
   return {
     UserId: { S: userId },
     StartDateTime: { S: startDateTime.toISOString() },
+  };
+};
+
+const modelToAttributesDto = (model) => {
+  const { title, description, endDateTime } = model;
+
+  return {
     EndDateTime: { S: endDateTime.toISOString() },
     Title: { S: title },
     Description: { S: description },
+  };
+};
+
+const modelToDto = (model, userId) => {
+  return {
+    ...assembleKeyDto(userId, model.startDateTime),
+    ...modelToAttributesDto(model),
   };
 };
 
@@ -56,21 +72,13 @@ export const createEvent = async (event, userId) => {
 };
 
 export const updateEvent = async (event, startDateTime, userId) => {
-  const { title, description, endDateTime } = event;
+  const attributesDto = modelToAttributesDto(event);
 
   const params = {
     TableName: tableName,
-    Key: {
-      UserId: { S: userId },
-      StartDateTime: { S: startDateTime.toISOString() },
-    },
-    UpdateExpression:
-      "set EndDateTime = :EndDateTime, Title = :Title, Description = :Description",
-    ExpressionAttributeValues: {
-      ":EndDateTime": { S: endDateTime.toISOString() },
-      ":Title": { S: title },
-      ":Description": { S: description },
-    },
+    Key: assembleKeyDto(userId, startDateTime),
+    UpdateExpression: assembleUpdateExpression(attributesDto),
+    ExpressionAttributeValues: assembleExpressionAttributeValues(attributesDto),
   };
 
   return await getDynamoDB().updateItem(params).promise();
@@ -79,10 +87,7 @@ export const updateEvent = async (event, startDateTime, userId) => {
 export const deleteEvent = async (startDateTime, userId) => {
   const params = {
     TableName: tableName,
-    Key: {
-      UserId: { S: userId },
-      StartDateTime: { S: startDateTime.toISOString() },
-    },
+    Key: assembleKeyDto(userId, startDateTime),
   };
 
   return await getDynamoDB().deleteItem(params).promise();

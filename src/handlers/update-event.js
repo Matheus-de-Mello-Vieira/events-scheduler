@@ -54,6 +54,6 @@ export const handler = wrapHandler(async (event) => {
   await updateEvent(body, params.StartDateTime, userId);
 
   return assembleHandleResponse(201, {
-    message: "Item created successfully!",
+    message: "Item updated successfully!",
   });
 });
