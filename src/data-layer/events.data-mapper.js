@@ -1,5 +1,4 @@
 import AWS from "aws-sdk";
-import lodash from "lodash";
 import config from "../config.js";
 import {
   assembleExpressionAttributeValues,
@@ -7,7 +6,6 @@ import {
 } from "../utilities/dynamoDB.js";
 import { pickParcialBy } from "../utilities/general.js";
 
-const { identity } = lodash;
 const { env } = config;
 
 const getDynamoDB = () => {
@@ -89,8 +87,6 @@ export const updateEvent = async (event, startDateTime, userId) => {
     UpdateExpression: assembleUpdateExpression(attributesDto),
     ExpressionAttributeValues: assembleExpressionAttributeValues(attributesDto),
   };
-
-  console.log(params);
 
   return await getDynamoDB().updateItem(params).promise();
 };
