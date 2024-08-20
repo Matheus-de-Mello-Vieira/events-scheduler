@@ -1,6 +1,6 @@
 const tableName = "test-events";
-import { getUserId } from "../utilities/request.js";
 import AWS from "aws-sdk";
+import { getUserId } from "../utilities/request.js";
 
 const userId = getUserId({});
 
@@ -19,7 +19,7 @@ class EventProxy {
   async expectThereIsNoOnDatabase() {
     const onDatabase = await this.queryOnDatabase();
 
-    expect(onDatabase).toBe(undefined)
+    expect(onDatabase).toBe(undefined);
   }
 
   async queryOnDatabase() {
@@ -33,6 +33,17 @@ class EventProxy {
       .promise();
 
     return result.Item;
+  }
+
+  async insertOnDatabase() {
+    const conn = new AWS.DynamoDB();
+
+    const params = {
+      TableName: tableName,
+      Item: this.asDto(),
+    };
+
+    return await conn.putItem(params).promise();
   }
 
   asJson() {
@@ -60,6 +71,10 @@ class EventProxy {
       Description: { S: description },
       EndDateTime: { S: endDateTime.toISOString() },
     };
+  }
+
+  rangeAttributeAsParam() {
+    return { StartDateTime: this.attributes.startDateTime.toISOString() };
   }
 }
 

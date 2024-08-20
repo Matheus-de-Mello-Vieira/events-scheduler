@@ -1,13 +1,11 @@
 import { handler as createEvent } from "../handlers/create-event.js";
+import { handler as deleteEvent } from "../handlers/delete-events.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { morningEvent } from "./events.mother.js";
 
-const tableName = "test-events";
-
 describe("Create", () => {
+  const event = morningEvent;
   test("should insert an item into DynamoDB", async () => {
-    const event = morningEvent;
-
     const response = await createEvent({
       body: event.asJson(),
     });
@@ -33,3 +31,33 @@ describe("Create", () => {
     event.expectThereIsNoOnDatabase();
   });
 });
+
+describe("Delete", () => {
+  const event = morningEvent;
+  test("should delete", async () => {
+    await event.insertOnDatabase();
+
+    const response = await deleteEvent({
+      pathParameters: event.rangeAttributeAsParam(),
+    });
+
+    expect(response).toEqual(
+      assembleHandleResponse(200, {
+        message: "Item deleted successfully!",
+      })
+    );
+  });
+
+  test.only("should return error when don't found", async () => {
+    const response = await deleteEvent({
+      pathParameters: event.rangeAttributeAsParam(),
+    });
+
+    expect(response).toEqual(
+      assembleHandleResponse(404, {
+        message: "Event did not found!",
+      })
+    );
+  });
+});
+

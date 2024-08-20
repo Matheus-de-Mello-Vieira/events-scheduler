@@ -69,6 +69,17 @@ export const getEvents = async (start, end, userId) => {
   return result.Items.map(dtoToModel);
 };
 
+export const getEvent = async (userId, startDateTime) => {
+  const result = await getDynamoDB()
+    .getItem({
+      TableName: tableName,
+      Key: assembleKeyDto(userId, startDateTime),
+    })
+    .promise();
+
+  return result.Item;
+};
+
 export const createEvent = async (event, userId) => {
   const params = {
     TableName: tableName,
