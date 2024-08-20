@@ -1,12 +1,15 @@
 import AWS from "aws-sdk";
 import fs from "fs";
 import yaml from "js-yaml";
-import { promisify } from "util";
 
-AWS.config.update({
-  apiVersion: "2012-08-10",
-  region: "local",
-  endpoint: "http://localhost:8000",
+beforeAll(() => {
+  AWS.config.update({
+    apiVersion: "2012-08-10",
+    region: "local",
+    endpoint: "http://localhost:8000",
+    accessKeyId: "acessKey",
+    secretAccessKey: "secretKey",
+  });
 });
 
 const deleteTables = async (conn) => {
