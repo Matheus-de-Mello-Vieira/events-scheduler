@@ -17,7 +17,7 @@ const bodySchema = {
 };
 
 const parseBody = (event) => {
-  const body = JSON.parse(event.body || null);
+  const body = JSON.parse(event.body);
   validate(body, bodySchema, "body");
 
   return {

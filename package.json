@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest",
+    "coverage": "NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --coverage",
     "lint": "eslint --fix src"
   },
   "author": "",
