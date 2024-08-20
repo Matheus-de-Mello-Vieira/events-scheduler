@@ -76,6 +76,10 @@ class EventProxy {
   rangeAttributeAsParam() {
     return { StartDateTime: this.attributes.startDateTime.toISOString() };
   }
+
+  with(updatedAttributed) {
+    return new EventProxy(Object.assign(this.attributes, updatedAttributed));
+  }
 }
 
 export const morningEvent = new EventProxy({

@@ -28,7 +28,7 @@ export const handler = wrapHandler(async (event) => {
   const userId = getUserId();
 
   if (!(await getEvent(userId, params.StartDateTime))) {
-    return assembleHandleResponse(404, { message: "Event did not found!" });
+    return assembleHandleResponse(404, { message: "Event did not find!" });
   }
 
   await deleteEvent(userId, params.StartDateTime);

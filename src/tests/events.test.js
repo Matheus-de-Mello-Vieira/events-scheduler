@@ -1,5 +1,6 @@
 import { handler as createEvent } from "../handlers/create-event.js";
 import { handler as deleteEvent } from "../handlers/delete-events.js";
+import { handler as updateEvent } from "../handlers/update-event.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { morningEvent } from "./events.mother.js";
 
@@ -48,14 +49,49 @@ describe("Delete", () => {
     );
   });
 
-  test("should return error when don't found", async () => {
+  test("should fail when don't found", async () => {
     const response = await deleteEvent({
       pathParameters: event.rangeAttributeAsParam(),
     });
 
     expect(response).toEqual(
       assembleHandleResponse(404, {
-        message: "Event did not found!",
+        message: "Event did not find!",
+      })
+    );
+  });
+});
+
+describe("Update", () => {
+  const initialEvent = morningEvent;
+  test("Update title", async () => {
+    await initialEvent.insertOnDatabase();
+
+    const updateParams = { description: "updated" };
+
+    const response = await updateEvent({
+      body: JSON.stringify(updateParams),
+      pathParameters: initialEvent.rangeAttributeAsParam(),
+    });
+
+    expect(response).toEqual(
+      assembleHandleResponse(201, {
+        message: "Item updated successfully!",
+      })
+    );
+
+    await initialEvent.with(updateParams).expectHasEqualOnDatabase();
+  });
+
+  test("Should fail when did not find", async () => {
+    const response = await updateEvent({
+      body: JSON.stringify({ description: "updated" }),
+      pathParameters: initialEvent.rangeAttributeAsParam(),
+    });
+
+    expect(response).toEqual(
+      assembleHandleResponse(404, {
+        message: "Event did not find!",
       })
     );
   });
