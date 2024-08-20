@@ -16,6 +16,12 @@ class EventProxy {
     expect(dto).toEqual(onDatabase);
   }
 
+  async expectThereIsNoOnDatabase() {
+    const onDatabase = await this.queryOnDatabase();
+
+    expect(onDatabase).toBe(undefined)
+  }
+
   async queryOnDatabase() {
     const conn = new AWS.DynamoDB();
 

@@ -20,4 +20,16 @@ describe("Create", () => {
 
     await event.expectHasEqualOnDatabase();
   });
+
+  test("should reject with invalid body", async () => {
+    const event = morningEvent;
+
+    const response = await createEvent({
+      body: JSON.stringify({ key: "invalid" }),
+    });
+
+    expect(response.statusCode).toBe(400);
+
+    event.expectThereIsNoOnDatabase();
+  });
 });

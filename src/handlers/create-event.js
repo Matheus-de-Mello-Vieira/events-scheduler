@@ -1,8 +1,8 @@
 import { createEvent } from "../data-layer/events.data-mapper.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
+import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { validate } from "../utilities/validation.js";
-import { getUserId } from "../utilities/request.js";
 
 const bodySchema = {
   type: "object",
@@ -17,7 +17,7 @@ const bodySchema = {
 };
 
 const parseBody = (event) => {
-  const body = JSON.parse(event.body);
+  const body = JSON.parse(event.body || null);
   validate(body, bodySchema, "body");
 
   return {
