@@ -1,37 +1,27 @@
 import { handler as createEvent } from "../handlers/create-event.js";
+import { getUserId } from "../utilities/request.js";
+import { assembleHandleResponse } from "../utilities/response.js";
+import { morningEvent } from "./events.mother.js";
 
 const tableName = "test-events";
 
 describe("Create", () => {
   test("should insert an item into DynamoDB", async () => {
+    const event = morningEvent;
+
     const lambdaEvent = {
-      body: JSON.stringify({
-        startDateTime: "2024-08-18T08:30:00+00:00",
-        title: "test",
-        description: "test description",
-        endDateTime: "2024-08-18T09:00:00+00:00",
-      }),
+      body: event.asJson(),
     };
-    
+
     const response = await createEvent(lambdaEvent);
-    
-    expect(response.statusCode).toBe(201)
 
+    expect(response).toEqual(
+      assembleHandleResponse(201, {
+        message: "Item created successfully!",
+      })
+    );
 
-    // await dynamoDB.put(params).promise();
-
-    // const result = await dynamoDB
-    //   .get({
-    //     TableName: "YourTableName",
-    //     Key: { id: "1", sortKey: "SK1" },
-    //   })
-    //   .promise();
-
-    // expect(result.Item).toEqual({
-    //   id: "1",
-    //   sortKey: "SK1",
-    //   data: "Test Data",
-    // });
+    await event.expectHasEqualOnDatabase();
   });
 
   // test("should delete an item from DynamoDB", async () => {
