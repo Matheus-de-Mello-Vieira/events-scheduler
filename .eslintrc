@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "standard"
+  ],
+  "env": {
+    "jest": true,
+    "jasmine": true
+  },
+  "rules": {
+    "curly": "off",
+    "no-prototype-builtins": "off",
+    "quote-props": "off"
+  }
+}

@@ -9,7 +9,7 @@ import { pickParcialBy } from "../utilities/general.js";
 const { env } = config;
 
 const getDynamoDB = () => {
-  return new AWS.DynamoDB({ apiVersion: "2012-08-10" });
+  return new AWS.DynamoDB();
 };
 
 const tableName = `${env}-events`;

@@ -1,8 +1,8 @@
-import AWS from "aws-sdk";
+const isTest = process.env.NODE_ENV === "test";
 
 const requireProcessEnv = (name) => {
-  if (!process.env[name] && process.env.NODE_ENV !== "test") {
-    throw new Error("Você deve definir a variável de ambiente:" + name);
+  if (!process.env[name] && !isTest) {
+    throw new Error("You must set the environment variable:" + name);
   }
   return process.env[name];
 };
@@ -18,6 +18,8 @@ const config = {
   production: {},
 };
 
-AWS.config.update({ region });
+if (!isTest) {
+  AWS.config.update({ region });
+}
 
 export default { ...config.all, ...config[config.all.env] };

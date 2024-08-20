@@ -5,13 +5,18 @@
   "main": "handler.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1677.0",
+    "js-yaml": "^4.1.0",
     "jsonschema": "^1.4.1",
     "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-sonar": "^0.2.16"
   }
 }

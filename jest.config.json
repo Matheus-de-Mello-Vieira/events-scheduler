@@ -1,0 +1,18 @@
+{
+  "moduleFileExtensions": ["js", "mjs"],
+  "testEnvironment": "node",
+  "setupFilesAfterEnv": ["./tests/setup.js"],
+  "testRegex": "((\\.|/*.)(test|spec))\\.js?$",
+  "transform": {},
+  "coveragePathIgnorePatterns": ["/node_modules/", "test"],
+  "reporters": [
+    "default",
+    [
+      "jest-sonar",
+      {
+        "outputDirectory": "coverage",
+        "outputName": "test-reporter.xml"
+      }
+    ]
+  ]
+}
