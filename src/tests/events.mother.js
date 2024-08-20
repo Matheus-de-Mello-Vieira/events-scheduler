@@ -82,9 +82,23 @@ class EventProxy {
   }
 }
 
-export const morningEvent = new EventProxy({
-  startDateTime: new Date("2024-08-18T08:30:00.000Z"),
-  title: "test",
-  description: "test description",
-  endDateTime: new Date("2024-08-18T09:00:00.000Z"),
-});
+export default {
+  eventMorning18: new EventProxy({
+    startDateTime: new Date("2024-08-18T08:30:00.000Z"),
+    title: "morning 18",
+    description: "morning 18",
+    endDateTime: new Date("2024-08-18T09:00:00.000Z"),
+  }),
+  eventAfternoon18: new EventProxy({
+    startDateTime: new Date("2024-08-18T15:30:00.000Z"),
+    title: "morning 18",
+    description: "afternoon 18",
+    endDateTime: new Date("2024-08-18T15:00:00.000Z"),
+  }),
+  eventMorning19: new EventProxy({
+    startDateTime: new Date("2024-08-19T08:30:00.000Z"),
+    title: "morning 19",
+    description: "morning 19",
+    endDateTime: new Date("2024-08-19T09:00:00.000Z"),
+  }),
+};

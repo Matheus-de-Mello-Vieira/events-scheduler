@@ -2,10 +2,10 @@ import { handler as createEvent } from "../handlers/create-event.js";
 import { handler as deleteEvent } from "../handlers/delete-events.js";
 import { handler as updateEvent } from "../handlers/update-event.js";
 import { assembleHandleResponse } from "../utilities/response.js";
-import { morningEvent } from "./events.mother.js";
+import eventMother from "./events.mother.js";
 
 describe("Create", () => {
-  const event = morningEvent;
+  const event = eventMother.eventMorning18;
   test("should insert an item into DynamoDB", async () => {
     const response = await createEvent({
       body: event.asJson(),
@@ -21,7 +21,7 @@ describe("Create", () => {
   });
 
   test("should reject with invalid body", async () => {
-    const event = morningEvent;
+    const event = eventMother.eventMorning18;
 
     const response = await createEvent({
       body: JSON.stringify({ key: "invalid" }),
@@ -33,37 +33,12 @@ describe("Create", () => {
   });
 });
 
-describe("Delete", () => {
-  const event = morningEvent;
-  test("should delete", async () => {
-    await event.insertOnDatabase();
-
-    const response = await deleteEvent({
-      pathParameters: event.rangeAttributeAsParam(),
-    });
-
-    expect(response).toEqual(
-      assembleHandleResponse(200, {
-        message: "Item deleted successfully!",
-      })
-    );
-  });
-
-  test("should fail when don't found", async () => {
-    const response = await deleteEvent({
-      pathParameters: event.rangeAttributeAsParam(),
-    });
-
-    expect(response).toEqual(
-      assembleHandleResponse(404, {
-        message: "Event did not find!",
-      })
-    );
-  });
+describe("Read", () => {
+  test("", async () => {});
 });
 
 describe("Update", () => {
-  const initialEvent = morningEvent;
+  const initialEvent = eventMother.eventMorning18;
   test("Update title", async () => {
     await initialEvent.insertOnDatabase();
 
@@ -87,6 +62,35 @@ describe("Update", () => {
     const response = await updateEvent({
       body: JSON.stringify({ description: "updated" }),
       pathParameters: initialEvent.rangeAttributeAsParam(),
+    });
+
+    expect(response).toEqual(
+      assembleHandleResponse(404, {
+        message: "Event did not find!",
+      })
+    );
+  });
+});
+
+describe("Delete", () => {
+  const event = eventMother.eventMorning18;
+  test("should delete", async () => {
+    await event.insertOnDatabase();
+
+    const response = await deleteEvent({
+      pathParameters: event.rangeAttributeAsParam(),
+    });
+
+    expect(response).toEqual(
+      assembleHandleResponse(200, {
+        message: "Item deleted successfully!",
+      })
+    );
+  });
+
+  test("should fail when don't found", async () => {
+    const response = await deleteEvent({
+      pathParameters: event.rangeAttributeAsParam(),
     });
 
     expect(response).toEqual(
