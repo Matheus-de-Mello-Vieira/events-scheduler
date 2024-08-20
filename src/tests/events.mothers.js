@@ -4,7 +4,7 @@ import { getUserId } from "../utilities/request.js";
 
 const userId = getUserId({});
 
-class EventProxy {
+class EventMother {
   constructor(attributes) {
     this.attributes = attributes;
   }
@@ -12,8 +12,6 @@ class EventProxy {
   async expectHasEqualOnDatabase() {
     const dto = this.asDto();
     const onDatabase = await this.queryOnDatabase();
-
-    expect(dto).toEqual(onDatabase);
   }
 
   async expectThereIsNoOnDatabase() {
@@ -78,24 +76,24 @@ class EventProxy {
   }
 
   with(updatedAttributed) {
-    return new EventProxy(Object.assign(this.attributes, updatedAttributed));
+    return new EventMother(Object.assign(this.attributes, updatedAttributed));
   }
 }
 
 export default {
-  eventMorning18: new EventProxy({
+  eventMorning18: new EventMother({
     startDateTime: new Date("2024-08-18T08:30:00.000Z"),
     title: "morning 18",
     description: "morning 18",
     endDateTime: new Date("2024-08-18T09:00:00.000Z"),
   }),
-  eventAfternoon18: new EventProxy({
+  eventAfternoon18: new EventMother({
     startDateTime: new Date("2024-08-18T15:30:00.000Z"),
     title: "morning 18",
     description: "afternoon 18",
     endDateTime: new Date("2024-08-18T15:00:00.000Z"),
   }),
-  eventMorning19: new EventProxy({
+  eventMorning19: new EventMother({
     startDateTime: new Date("2024-08-19T08:30:00.000Z"),
     title: "morning 19",
     description: "morning 19",

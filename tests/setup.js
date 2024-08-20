@@ -1,6 +1,7 @@
 import AWS from "aws-sdk";
 import fs from "fs";
 import yaml from "js-yaml";
+import * as customMatchers from "./customMatchers.js";
 
 beforeAll(() => {
   AWS.config.update({
@@ -10,6 +11,8 @@ beforeAll(() => {
     accessKeyId: "acessKey",
     secretAccessKey: "secretKey",
   });
+
+  expect.extend(customMatchers);
 });
 
 const deleteTables = async (conn) => {

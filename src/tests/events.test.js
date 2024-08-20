@@ -1,34 +1,33 @@
 import { handler as createEvent } from "../handlers/create-event.js";
+import { handler as deleteEvent } from "../handlers/delete-event.js";
 import { handler as readEvent } from "../handlers/read-events.js";
 import { handler as updateEvent } from "../handlers/update-event.js";
-import { handler as deleteEvent } from "../handlers/delete-event.js";
 import { assembleHandleResponse } from "../utilities/response.js";
-import eventMother from "./events.mother.js";
+import eventMothers from "./events.mothers.js";
 
 describe("Create", () => {
-  const event = eventMother.eventMorning18;
+  const event = eventMothers.eventMorning18;
   test("should insert an item into DynamoDB", async () => {
     const response = await createEvent({
       body: event.asJson(),
     });
 
-    expect(response).toEqual(
-      assembleHandleResponse(201, {
-        message: "Item created successfully!",
-      })
-    );
+    expect(response).hasStatusCode(201);
+    expect(response).hasJSONBodyEquals({
+      message: "Item created successfully!",
+    });
 
     await event.expectHasEqualOnDatabase();
   });
 
   test("should reject with invalid body", async () => {
-    const event = eventMother.eventMorning18;
+    const event = eventMothers.eventMorning18;
 
     const response = await createEvent({
       body: JSON.stringify({ key: "invalid" }),
     });
 
-    expect(response.statusCode).toBe(400);
+    expect(response).hasStatusCode(400);
 
     event.expectThereIsNoOnDatabase();
   });
@@ -37,19 +36,26 @@ describe("Create", () => {
 describe("Read", () => {
   beforeEach(async () => {
     await Promise.all(
-      Object.values(eventMother).map(async (event) => {
+      Object.values(eventMothers).map(async (event) => {
         await event.insertOnDatabase();
       })
     );
   });
 
-  test("read all", async () => {
-    const response = await readEvent({});
+  test("read on 2024-08-19", async () => {
+    const response = await readEvent({
+      queryStringParameters: { start: "2024-08-19", end: "2024-08-19" },
+    });
+
+    expect(response).hasStatusCode(200);
+    expect(response).hasJSONBodyEquals([
+      eventMothers.eventMorning19.attributes,
+    ]);
   });
 });
 
 describe("Update", () => {
-  const initialEvent = eventMother.eventMorning18;
+  const initialEvent = eventMothers.eventMorning18;
   test("Update title", async () => {
     await initialEvent.insertOnDatabase();
 
@@ -60,13 +66,12 @@ describe("Update", () => {
       pathParameters: initialEvent.rangeAttributeAsParam(),
     });
 
-    expect(response).toEqual(
-      assembleHandleResponse(201, {
-        message: "Item updated successfully!",
-      })
-    );
+    expect(response).hasStatusCode(200);
+    expect(response).hasJSONBodyEquals({
+      message: "Item updated successfully!",
+    });
 
-    await initialEvent.with(updateParams).expectHasEqualOnDatabase();
+    await expect(initialEvent.with(updateParams)).hasEqualOnDatabase();
   });
 
   test("Should fail when did not find", async () => {
@@ -75,16 +80,15 @@ describe("Update", () => {
       pathParameters: initialEvent.rangeAttributeAsParam(),
     });
 
-    expect(response).toEqual(
-      assembleHandleResponse(404, {
-        message: "Event did not find!",
-      })
-    );
+    expect(response).hasStatusCode(404);
+    expect(response).hasJSONBodyEquals({
+      message: "Event did not find!",
+    });
   });
 });
 
 describe("Delete", () => {
-  const event = eventMother.eventMorning18;
+  const event = eventMothers.eventMorning18;
   test("should delete", async () => {
     await event.insertOnDatabase();
 
@@ -92,11 +96,10 @@ describe("Delete", () => {
       pathParameters: event.rangeAttributeAsParam(),
     });
 
-    expect(response).toEqual(
-      assembleHandleResponse(200, {
-        message: "Item deleted successfully!",
-      })
-    );
+    expect(response).hasStatusCode(200);
+    expect(response).hasJSONBodyEquals({
+      message: "Item deleted successfully!",
+    });
   });
 
   test("should fail when don't found", async () => {
@@ -104,10 +107,9 @@ describe("Delete", () => {
       pathParameters: event.rangeAttributeAsParam(),
     });
 
-    expect(response).toEqual(
-      assembleHandleResponse(404, {
-        message: "Event did not find!",
-      })
-    );
+    expect(response).hasStatusCode(404);
+    expect(response).hasJSONBodyEquals({
+      message: "Event did not find!",
+    });
   });
 });
