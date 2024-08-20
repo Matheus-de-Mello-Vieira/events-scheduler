@@ -48,7 +48,7 @@ describe("Delete", () => {
     );
   });
 
-  test.only("should return error when don't found", async () => {
+  test("should return error when don't found", async () => {
     const response = await deleteEvent({
       pathParameters: event.rangeAttributeAsParam(),
     });
@@ -60,4 +60,3 @@ describe("Delete", () => {
     );
   });
 });
-

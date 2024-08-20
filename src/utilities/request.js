@@ -1,3 +1,3 @@
 export const getUserId = (req) => {
-    return "mocked.user"
-}
+    return "mocked.user";
+};
