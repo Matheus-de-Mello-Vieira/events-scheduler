@@ -56,23 +56,30 @@ describe("Read", () => {
 
 describe("Update", () => {
   const initialEvent = eventMothers.eventMorning18;
-  test("Update title", async () => {
-    await initialEvent.insertOnDatabase();
 
-    const updateParams = { description: "updated" };
+  function createTestUpdate(updateParams) {
+    return async () => {
+      await initialEvent.insertOnDatabase();
 
-    const response = await updateEvent({
-      body: JSON.stringify(updateParams),
-      pathParameters: initialEvent.rangeAttributeAsParam(),
-    });
+      const response = await updateEvent({
+        body: JSON.stringify(updateParams),
+        pathParameters: initialEvent.rangeAttributeAsParam(),
+      });
 
-    expect(response).hasStatusCode(200);
-    expect(response).hasJSONBodyEquals({
-      message: "Item updated successfully!",
-    });
+      expect(response).hasStatusCode(200);
+      expect(response).hasJSONBodyEquals({
+        message: "Item updated successfully!",
+      });
 
-    await expect(initialEvent.with(updateParams)).hasEqualOnDatabase();
-  });
+      await expect(initialEvent.with(updateParams)).hasEqualOnDatabase();
+    };
+  }
+
+  test("Update description", createTestUpdate({ description: "updated" }));
+  test(
+    "Update endDateTime",
+    createTestUpdate({ endDateTime: new Date("2024-08-18T10:00:00.000Z") })
+  );
 
   test("Should fail when did not find", async () => {
     const response = await updateEvent({
