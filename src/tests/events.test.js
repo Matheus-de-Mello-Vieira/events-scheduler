@@ -1,6 +1,7 @@
 import { handler as createEvent } from "../handlers/create-event.js";
-import { handler as deleteEvent } from "../handlers/delete-events.js";
+import { handler as readEvent } from "../handlers/read-events.js";
 import { handler as updateEvent } from "../handlers/update-event.js";
+import { handler as deleteEvent } from "../handlers/delete-event.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import eventMother from "./events.mother.js";
 
@@ -34,7 +35,17 @@ describe("Create", () => {
 });
 
 describe("Read", () => {
-  test("", async () => {});
+  beforeEach(async () => {
+    await Promise.all(
+      Object.values(eventMother).map(async (event) => {
+        await event.insertOnDatabase();
+      })
+    );
+  });
+
+  test("read all", async () => {
+    const response = await readEvent({});
+  });
 });
 
 describe("Update", () => {

@@ -55,7 +55,7 @@ functions:
           path: /events/{StartDateTime}
           method: put
   delete-events:
-    handler: src/handlers/delete-events.handler
+    handler: src/handlers/delete-event.handler
     events:
       - httpApi:
           path: /events/{StartDateTime}
