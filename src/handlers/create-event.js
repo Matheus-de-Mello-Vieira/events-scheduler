@@ -1,9 +1,9 @@
 import { createEvent } from "../data-layer/events.data-mapper.js";
+import { createEventBodySchema } from "../inputs/eventsSchemas.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
 import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { validate } from "../utilities/validation.js";
-import { createEventBodySchema } from "../validators/eventsSchemas.js";
 
 const parseBody = (event) => {
   const body = JSON.parse(event.body);
