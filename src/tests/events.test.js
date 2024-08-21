@@ -2,8 +2,8 @@ import { handler as createEvent } from "../handlers/create-event.js";
 import { handler as deleteEvent } from "../handlers/delete-event.js";
 import { handler as readEvent } from "../handlers/read-events.js";
 import { handler as updateEvent } from "../handlers/update-event.js";
-import { assembleHandleResponse } from "../utilities/response.js";
 import eventMothers from "./events.mothers.js";
+import { convertDateToDateString } from "../utilities/general.js";
 
 describe("Create", () => {
   const event = eventMothers.eventMorning18;
@@ -42,16 +42,54 @@ describe("Read", () => {
     );
   });
 
-  test("read on 2024-08-19", async () => {
-    const response = await readEvent({
-      queryStringParameters: { start: "2024-08-19", end: "2024-08-19" },
-    });
+  const { eventMorning17, eventMorning18, eventAfternoon18, eventMorning19 } =
+    eventMothers;
 
-    expect(response).hasStatusCode(200);
-    expect(response).hasJSONBodyEquals([
-      eventMothers.eventMorning19.attributes,
-    ]);
-  });
+  const day18 = convertDateToDateString(
+    eventMorning18.attributes.startDateTime
+  );
+
+  function testRead(query, expectedEventsMothers) {
+    return async () => {
+      const response = await readEvent({
+        queryStringParameters: query,
+      });
+
+      expect(response).hasStatusCode(200);
+      expect(response).hasJSONBodyEquals(
+        expectedEventsMothers.map((event) => event.attributes)
+      );
+    };
+  }
+
+  test(
+    "read without start and without end",
+    testRead({}, [
+      eventMorning17,
+      eventMorning18,
+      eventAfternoon18,
+      eventMorning19,
+    ])
+  );
+
+  test(
+    "read with start and without end",
+    testRead({ start: day18 }, [
+      eventMorning18,
+      eventAfternoon18,
+      eventMorning19,
+    ])
+  );
+
+  test(
+    "read without start and with end",
+    testRead({ end: day18 }, [eventMorning17, eventMorning18, eventAfternoon18])
+  );
+
+  test(
+    "read with start and with end",
+    testRead({ start: day18, end: day18 }, [eventMorning18, eventAfternoon18])
+  );
 });
 
 describe("Update", () => {

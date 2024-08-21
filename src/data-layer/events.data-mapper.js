@@ -4,7 +4,10 @@ import {
   assembleExpressionAttributeValues,
   assembleUpdateExpression,
 } from "../utilities/dynamoDB.js";
-import { pickParcialBy } from "../utilities/general.js";
+import {
+  convertDateToDateString,
+  pickParcialBy,
+} from "../utilities/general.js";
 
 const { env } = config;
 
@@ -54,15 +57,36 @@ const dtoToModel = (dto) => {
 };
 
 export const getEvents = async (start, end, userId) => {
+  const conditionRangeMap = {
+    [[false, false]]: "",
+    [[true, false]]: " AND :start <= StartDateTime",
+    [[false, true]]: " AND StartDateTime <= :end",
+    [[true, true]]: " AND StartDateTime BETWEEN :start AND :end",
+  };
+
   var params = {
     TableName: tableName,
     KeyConditionExpression:
-      "UserId = :user_id AND StartDateTime BETWEEN :start AND :end",
-    ExpressionAttributeValues: {
-      ":user_id": { S: userId },
-      ":start": { S: start.toISOString().substring(0, 10) + "T00:00:00.000Z" },
-      ":end": { S: end.toISOString().substring(0, 10) + "T23:59:59.000Z" },
-    },
+      "UserId = :user_id" +
+      conditionRangeMap[[start !== undefined, end !== undefined]],
+    ExpressionAttributeValues: pickParcialBy(
+      {
+        ":user_id": userId,
+        ":start": start,
+        ":end": end,
+      },
+      {
+        ":user_id": (userId) => ({
+          S: userId,
+        }),
+        ":start": (start) => ({
+          S: convertDateToDateString(start) + "T00:00:00.000Z",
+        }),
+        ":end": (end) => ({
+          S: convertDateToDateString(end) + "T23:59:59.000Z",
+        }),
+      }
+    ),
   };
 
   const result = await getDynamoDB().query(params).promise();

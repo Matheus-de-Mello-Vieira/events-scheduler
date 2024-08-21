@@ -81,6 +81,12 @@ class EventMother {
 }
 
 export default {
+  eventMorning17: new EventMother({
+    startDateTime: new Date("2024-08-17T08:30:00.000Z"),
+    title: "morning 17",
+    description: "morning 17",
+    endDateTime: new Date("2024-08-17T09:00:00.000Z"),
+  }),
   eventMorning18: new EventMother({
     startDateTime: new Date("2024-08-18T08:30:00.000Z"),
     title: "morning 18",

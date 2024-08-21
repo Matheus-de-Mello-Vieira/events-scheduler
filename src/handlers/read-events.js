@@ -3,6 +3,9 @@ import { wrapHandler } from "../utilities/handlerWrapper.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { validate } from "../utilities/validation.js";
 import { getUserId } from "../utilities/request.js";
+import { pickParcialBy } from "../utilities/general.js";
+import lodash from "lodash";
+const { identity } = lodash;
 
 const querySchema = {
   type: "object",
@@ -10,7 +13,6 @@ const querySchema = {
     start: { type: "string", format: "date" },
     end: { type: "string", format: "date" },
   },
-  required: ["start", "end"],
   additionalProperties: false,
 };
 
@@ -19,10 +21,10 @@ const parseQuery = (event) => {
 
   validate(query, querySchema, "query");
 
-  return {
-    start: new Date(query.start),
-    end: new Date(query.end),
-  };
+  return pickParcialBy(query, {
+    start: (start) => new Date(start),
+    end: (end) => new Date(end),
+  });
 };
 
 export const handler = wrapHandler(async (event) => {
