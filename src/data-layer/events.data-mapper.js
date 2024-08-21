@@ -26,16 +26,15 @@ const assembleKeyDto = (userId, startDateTime) => {
 
 const modelToAttributesDto = (model) => {
   return pickParcialBy(
-    model,
     {
-      title: (title) => ({ S: title }),
-      description: (description) => ({ S: description }),
-      endDateTime: (endDateTime) => ({ S: endDateTime.toISOString() }),
+      Title: model.title,
+      Description: model.description,
+      EndDateTime: model.endDateTime,
     },
     {
-      title: "Title",
-      description: "Description",
-      endDateTime: "EndDateTime",
+      Title: (Title) => ({ S: Title }),
+      Description: (Description) => ({ S: Description }),
+      EndDateTime: (EndDateTime) => ({ S: EndDateTime.toISOString() }),
     }
   );
 };
