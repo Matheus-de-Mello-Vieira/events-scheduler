@@ -1,6 +1,10 @@
 export const UserError = class {
   constructor(responseBody) {
-    this.responseBody = responseBody;
+    this._responseBody = responseBody;
+  }
+
+  get responseBody() {
+    return this._responseBody;
   }
 };
 export const ValidationError = class extends UserError {
