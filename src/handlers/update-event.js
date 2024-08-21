@@ -5,9 +5,9 @@ import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { updateEventBodySchema } from "../inputs/eventsSchemas.js";
 
-export const handler = wrapHandler(async (event) => {
-  const body = parseEventBody(event, updateEventBodySchema);
-  const params = parseEventParams(event);
+export const handler = wrapHandler(async (lambdaEvent) => {
+  const body = parseEventBody(lambdaEvent, updateEventBodySchema);
+  const params = parseEventParams(lambdaEvent);
   const userId = getUserId();
 
   if (!(await getEvent(userId, params.startDateTime))) {

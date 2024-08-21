@@ -5,8 +5,8 @@ import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { createEventBodySchema } from "../inputs/eventsSchemas.js";
 
-export const handler = wrapHandler(async (event) => {
-  const body = parseEventBody(event, createEventBodySchema);
+export const handler = wrapHandler(async (labmdaEvent) => {
+  const body = parseEventBody(labmdaEvent, createEventBodySchema);
   const userId = getUserId();
 
   await createEvent(body, userId);

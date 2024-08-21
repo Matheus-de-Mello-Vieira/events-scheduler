@@ -4,8 +4,8 @@ import { wrapHandler } from "../utilities/handlerWrapper.js";
 import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 
-export const handler = wrapHandler(async (event) => {
-  const params = parseEventParams(event);
+export const handler = wrapHandler(async (lambdaEvent) => {
+  const params = parseEventParams(lambdaEvent);
   const userId = getUserId();
 
   if (!(await getEvent(userId, params.startDateTime))) {

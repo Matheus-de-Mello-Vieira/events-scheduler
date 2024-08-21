@@ -14,8 +14,8 @@ const querySchema = {
   additionalProperties: false,
 };
 
-const parseQuery = (event) => {
-  const query = event.queryStringParameters;
+const parseQuery = (lambdaEvent) => {
+  const query = lambdaEvent.queryStringParameters;
 
   validate(query, querySchema, "query");
 
@@ -25,8 +25,8 @@ const parseQuery = (event) => {
   });
 };
 
-export const handler = wrapHandler(async (event) => {
-  const query = parseQuery(event);
+export const handler = wrapHandler(async (lambdaEvent) => {
+  const query = parseQuery(lambdaEvent);
   const userId = getUserId();
 
   const events = await getEvents(query.start, query.end, userId);
