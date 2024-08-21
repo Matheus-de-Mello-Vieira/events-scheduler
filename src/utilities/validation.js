@@ -1,5 +1,5 @@
 import { Validator } from "jsonschema";
-import { ValidationError } from "./exceptions";
+import { ValidationError } from "./exceptions.js";
 
 export const validate = (data, schema, target) => {
   if (!data) {
