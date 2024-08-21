@@ -1,13 +1,13 @@
 import lodash from "lodash";
-import { validate } from "../utilities/validation.js";
 import { pickParcialBy } from "../utilities/general.js";
-import { keyEventParamSchema, createEventBodySchema } from "./eventsSchemas.js";
+import { validate } from "../utilities/validation.js";
+import { keyEventParamSchema } from "./eventsSchemas.js";
 
 const { identity } = lodash;
 
-export const parseEventBody = (lambdaEvent) => {
+export const parseEventBody = (lambdaEvent, schema) => {
   const body = JSON.parse(lambdaEvent.body);
-  validate(body, createEventBodySchema, "body");
+  validate(body, schema, "body");
 
   return pickParcialBy(body, {
     startDateTime: (startDateTime) => new Date(startDateTime),

@@ -2,8 +2,8 @@ import { handler as createEvent } from "../handlers/create-event.js";
 import { handler as deleteEvent } from "../handlers/delete-event.js";
 import { handler as readEvent } from "../handlers/read-events.js";
 import { handler as updateEvent } from "../handlers/update-event.js";
-import eventMothers from "./events.mothers.js";
 import { convertDateToDateString } from "../utilities/general.js";
+import eventMothers from "./events.mothers.js";
 
 describe("Create", () => {
   const event = eventMothers.eventMorning18;
