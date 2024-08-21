@@ -3,8 +3,8 @@ import { handler as deleteEvent } from "../handlers/delete-event.js";
 import { handler as readEvent } from "../handlers/read-events.js";
 import { handler as updateEvent } from "../handlers/update-event.js";
 import { convertDateToDateString } from "../utilities/general.js";
-import eventMothers from "./events.mothers.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
+import eventMothers from "./events.mothers.js";
 
 describe("Create", () => {
   const event = eventMothers.eventMorning18;
@@ -140,6 +140,15 @@ describe("Update", () => {
     expect(response).hasJSONBodyEquals({
       message: "Event did not find!",
     });
+  });
+
+  test("should have path param", async () => {
+    const response = await updateEvent({
+      body: JSON.stringify({ description: "updated" }),
+    });
+
+    expect(response).hasStatusCode(400);
+    expect(response).hasJSONBodyEquals({ param: ["param is nullable"] });
   });
 });
 
