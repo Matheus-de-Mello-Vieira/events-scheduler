@@ -2,21 +2,10 @@ import { deleteEvent, getEvent } from "../data-layer/events.data-mapper.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
 import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
-import { validate } from "../utilities/validation.js";
-import { keyEventParamSchema } from "../schemas/eventsSchemas.js";
-
-const parseParams = (event) => {
-  const params = event.pathParameters;
-
-  validate(params, keyEventParamSchema, "param");
-
-  return {
-    StartDateTime: new Date(params.StartDateTime),
-  };
-};
+import { parseEventParams } from "../validators/validator.js";
 
 export const handler = wrapHandler(async (event) => {
-  const params = parseParams(event);
+  const params = parseEventParams(event);
   const userId = getUserId();
 
   if (!(await getEvent(userId, params.StartDateTime))) {

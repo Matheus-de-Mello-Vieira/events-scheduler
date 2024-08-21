@@ -1,11 +1,9 @@
 import { getEvents } from "../data-layer/events.data-mapper.js";
+import { pickParcialBy } from "../utilities/general.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
+import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { validate } from "../utilities/validation.js";
-import { getUserId } from "../utilities/request.js";
-import { pickParcialBy } from "../utilities/general.js";
-import lodash from "lodash";
-const { identity } = lodash;
 
 const querySchema = {
   type: "object",
