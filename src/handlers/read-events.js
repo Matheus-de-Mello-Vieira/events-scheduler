@@ -15,7 +15,7 @@ const querySchema = {
 };
 
 const parseQuery = (lambdaEvent) => {
-  const query = lambdaEvent.queryStringParameters;
+  const query = lambdaEvent.queryStringParameters || {};
 
   validate(query, querySchema, "query");
 

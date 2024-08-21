@@ -63,6 +63,16 @@ describe("Read", () => {
   }
 
   test(
+    "read without query",
+    testRead(undefined, [
+      eventMorning17,
+      eventMorning18,
+      eventAfternoon18,
+      eventMorning19,
+    ])
+  );
+
+  test(
     "read without start and without end",
     testRead({}, [
       eventMorning17,
