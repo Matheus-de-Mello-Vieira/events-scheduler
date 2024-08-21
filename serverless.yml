@@ -6,8 +6,6 @@ provider:
   name: aws
   runtime: nodejs20.x
 
-  region: ${param:AWS_REGION}
-
   iamRoleStatements:
     - Effect: "Allow"
       Action:
