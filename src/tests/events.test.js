@@ -4,6 +4,7 @@ import { handler as readEvent } from "../handlers/read-events.js";
 import { handler as updateEvent } from "../handlers/update-event.js";
 import { convertDateToDateString } from "../utilities/general.js";
 import eventMothers from "./events.mothers.js";
+import { wrapHandler } from "../utilities/handlerWrapper.js";
 
 describe("Create", () => {
   const event = eventMothers.eventMorning18;
@@ -165,6 +166,21 @@ describe("Delete", () => {
     expect(response).hasStatusCode(404);
     expect(response).hasJSONBodyEquals({
       message: "Event did not find!",
+    });
+  });
+});
+
+describe("Abstract", () => {
+  test("Unexpected Error Catch", async () => {
+    const handler = wrapHandler(async (labmdaEvent) => {
+      throw { error: "error" };
+    });
+
+    const response = await handler({});
+
+    expect(response).hasStatusCode(500);
+    expect(response).hasJSONBodyEquals({
+      message: "Internal Error",
     });
   });
 });
