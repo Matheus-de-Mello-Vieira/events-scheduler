@@ -60,10 +60,6 @@ functions:
       - httpApi:
           path: /events/{startDateTime}
           method: delete
-          request:
-          parameters:
-            paths:
-              StartDateTime: true
 
 resources:
   Resources:
