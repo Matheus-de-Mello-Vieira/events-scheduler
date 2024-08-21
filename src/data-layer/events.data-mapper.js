@@ -63,7 +63,7 @@ export const getEvents = async (start, end, userId) => {
     [[true, true]]: " AND StartDateTime BETWEEN :start AND :end",
   };
 
-  var params = {
+  let params = {
     TableName: tableName,
     KeyConditionExpression:
       "UserId = :user_id" +

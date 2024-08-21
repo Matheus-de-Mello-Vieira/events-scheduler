@@ -1,3 +1,5 @@
+import AWS from "aws-sdk";
+
 const isTest = process.env.NODE_ENV === "test";
 
 const requireProcessEnv = (name) => {

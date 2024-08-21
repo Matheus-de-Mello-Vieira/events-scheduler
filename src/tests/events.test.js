@@ -2,7 +2,9 @@ import { handler as createEvent } from "../handlers/create-event.js";
 import { handler as deleteEvent } from "../handlers/delete-event.js";
 import { handler as readEvent } from "../handlers/read-events.js";
 import { handler as updateEvent } from "../handlers/update-event.js";
+import { parseEventBody } from "../inputs/parses.js";
 import { convertDateToDateString } from "../utilities/general.js";
+import { wrapHandler } from "../utilities/handlerWrapper.js";
 import eventMothers from "./events.mothers.js";
 
 describe("Create", () => {
@@ -17,7 +19,7 @@ describe("Create", () => {
       message: "Item created successfully!",
     });
 
-    await event.expectHasEqualOnDatabase();
+    await expect(event).hasEqualOnDatabase()
   });
 
   test("should reject with invalid body", async () => {
@@ -29,7 +31,7 @@ describe("Create", () => {
 
     expect(response).hasStatusCode(400);
 
-    event.expectThereIsNoOnDatabase();
+    await expect(event).not.expectThereIsKeysOnDatabase()
   });
 });
 
@@ -61,6 +63,16 @@ describe("Read", () => {
       );
     };
   }
+
+  test(
+    "read without query",
+    testRead(undefined, [
+      eventMorning17,
+      eventMorning18,
+      eventAfternoon18,
+      eventMorning19,
+    ])
+  );
 
   test(
     "read without start and without end",
@@ -130,6 +142,15 @@ describe("Update", () => {
       message: "Event did not find!",
     });
   });
+
+  test("should have path param", async () => {
+    const response = await updateEvent({
+      body: JSON.stringify({ description: "updated" }),
+    });
+
+    expect(response).hasStatusCode(400);
+    expect(response).hasJSONBodyEquals({ param: ["param is nullable"] });
+  });
 });
 
 describe("Delete", () => {
@@ -156,5 +177,33 @@ describe("Delete", () => {
     expect(response).hasJSONBodyEquals({
       message: "Event did not find!",
     });
+  });
+});
+
+describe("Abstract", () => {
+  test("Unexpected Error Catch", async () => {
+    const handler = wrapHandler(async (labmdaEvent) => {
+      throw new Error("error");
+    });
+
+    const response = await handler({});
+
+    expect(response).hasStatusCode(500);
+    expect(response).hasJSONBodyEquals({
+      message: "Internal Error",
+    });
+  });
+
+  test("Catch Invalid Body", async () => {
+    const handler = wrapHandler(async (labmdaEvent) => {
+      parseEventBody(labmdaEvent, {});
+    });
+
+    const response = await handler({
+      body: "invalid json",
+    });
+
+    expect(response).hasStatusCode(400);
+    expect(response).hasJSONBodyEquals({ body: ["body is not a valid JSON"] });
   });
 });
