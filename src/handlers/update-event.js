@@ -6,29 +6,14 @@ import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { validate } from "../utilities/validation.js";
 const { identity } = lodash;
-
-const bodySchema = {
-  type: "object",
-  properties: {
-    title: { type: "string" },
-    description: { type: "string" },
-    endDateTime: { type: "string", format: "date-time" },
-  },
-  additionalProperties: false,
-};
-
-const paramSchema = {
-  type: "object",
-  properties: {
-    StartDateTime: { type: "string", format: "date-time" },
-  },
-  required: ["StartDateTime"],
-  additionalProperties: false,
-};
+import {
+  createEventBodySchema,
+  keyEventParamSchema,
+} from "../schemas/eventsSchemas.js";
 
 const parseBody = (event) => {
   const body = JSON.parse(event.body);
-  validate(body, bodySchema, "body");
+  validate(body, createEventBodySchema, "body");
 
   return pickParcialBy(body, {
     title: identity,
@@ -40,7 +25,7 @@ const parseBody = (event) => {
 const parseParams = (event) => {
   const params = event.pathParameters;
 
-  validate(params, paramSchema, "param");
+  validate(params, keyEventParamSchema, "param");
   return {
     StartDateTime: new Date(params.StartDateTime),
   };

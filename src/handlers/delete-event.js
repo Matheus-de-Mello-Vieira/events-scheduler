@@ -3,20 +3,12 @@ import { wrapHandler } from "../utilities/handlerWrapper.js";
 import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { validate } from "../utilities/validation.js";
-
-const paramSchema = {
-  type: "object",
-  properties: {
-    StartDateTime: { type: "string", format: "date-time" },
-  },
-  required: ["StartDateTime"],
-  additionalProperties: false,
-};
+import { keyEventParamSchema } from "../schemas/eventsSchemas.js";
 
 const parseParams = (event) => {
   const params = event.pathParameters;
 
-  validate(params, paramSchema, "param");
+  validate(params, keyEventParamSchema, "param");
 
   return {
     StartDateTime: new Date(params.StartDateTime),

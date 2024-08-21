@@ -3,22 +3,11 @@ import { wrapHandler } from "../utilities/handlerWrapper.js";
 import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
 import { validate } from "../utilities/validation.js";
-
-const bodySchema = {
-  type: "object",
-  properties: {
-    startDateTime: { type: "string", format: "date-time" },
-    title: { type: "string" },
-    description: { type: "string" },
-    endDateTime: { type: "string", format: "date-time" },
-  },
-  required: ["startDateTime", "title", "description", "endDateTime"],
-  additionalProperties: false,
-};
+import { createEventBodySchema } from "../schemas/eventsSchemas.js";
 
 const parseBody = (event) => {
   const body = JSON.parse(event.body);
-  validate(body, bodySchema, "body");
+  validate(body, createEventBodySchema, "body");
 
   return {
     startDateTime: new Date(body.startDateTime),
