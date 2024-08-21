@@ -25,6 +25,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
         if: github.ref == 'refs/heads/develop'
       - run: npm install
+        if: github.ref == 'refs/heads/develop'
+
       - name: Run DynamoDB
         run: docker run -d -p 8000:8000 amazon/dynamodb-local
         if: github.ref == 'refs/heads/develop'
