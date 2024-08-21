@@ -192,4 +192,17 @@ describe("Abstract", () => {
       message: "Internal Error",
     });
   });
+
+  // test("Catch Invalid Body", async () => {
+  //   const handler = wrapHandler(async (labmdaEvent) => {
+  //     parseEventBody(labmdaEvent, {});
+  //   });
+
+  //   const response = await handler({
+  //     "body": 'invalid json'
+  //   });
+
+  //   expect(response).hasStatusCode(400);
+  //   expect(response).hasJSONBodyEquals({ body: ["body is not a valid JSON"] });
+  // });
 });
