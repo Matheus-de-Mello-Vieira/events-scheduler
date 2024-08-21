@@ -8,11 +8,11 @@ export const handler = wrapHandler(async (event) => {
   const params = parseEventParams(event);
   const userId = getUserId();
 
-  if (!(await getEvent(userId, params.StartDateTime))) {
+  if (!(await getEvent(userId, params.startDateTime))) {
     return assembleHandleResponse(404, { message: "Event did not find!" });
   }
 
-  await deleteEvent(userId, params.StartDateTime);
+  await deleteEvent(userId, params.startDateTime);
 
   return assembleHandleResponse(200, { message: "Item deleted successfully!" });
 });

@@ -17,9 +17,9 @@ export const updateEventBodySchema = Object.assign(createEventBodySchema, {
 export const keyEventParamSchema = {
   type: "object",
   properties: {
-    StartDateTime: { type: "string", format: "date-time" },
+    startDateTime: { type: "string", format: "date-time" },
   },
-  required: ["StartDateTime"],
+  required: ["startDateTime"],
   additionalProperties: false,
 };
 

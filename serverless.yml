@@ -52,13 +52,13 @@ functions:
     handler: src/handlers/update-event.handler
     events:
       - httpApi:
-          path: /events/{StartDateTime}
+          path: /events/{startDateTime}
           method: put
   delete-events:
     handler: src/handlers/delete-event.handler
     events:
       - httpApi:
-          path: /events/{StartDateTime}
+          path: /events/{startDateTime}
           method: delete
           request: 
           parameters: 

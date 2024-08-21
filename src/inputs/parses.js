@@ -23,6 +23,6 @@ export const parseEventParams = (lambdaEvent) => {
   validate(params, keyEventParamSchema, "param");
 
   return {
-    StartDateTime: new Date(params.StartDateTime),
+    startDateTime: new Date(params.startDateTime),
   };
 };

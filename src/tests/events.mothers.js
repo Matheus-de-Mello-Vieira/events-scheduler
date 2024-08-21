@@ -72,7 +72,7 @@ class EventMother {
   }
 
   rangeAttributeAsParam() {
-    return { StartDateTime: this.attributes.startDateTime.toISOString() };
+    return { startDateTime: this.attributes.startDateTime.toISOString() };
   }
 
   with(updatedAttributed) {

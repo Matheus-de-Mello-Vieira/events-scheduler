@@ -9,11 +9,11 @@ export const handler = wrapHandler(async (event) => {
   const params = parseEventParams(event);
   const userId = getUserId();
 
-  if (!(await getEvent(userId, params.StartDateTime))) {
+  if (!(await getEvent(userId, params.startDateTime))) {
     return assembleHandleResponse(404, { message: "Event did not find!" });
   }
 
-  await updateEvent(body, params.StartDateTime, userId);
+  await updateEvent(body, params.startDateTime, userId);
 
   return assembleHandleResponse(200, {
     message: "Item updated successfully!",
