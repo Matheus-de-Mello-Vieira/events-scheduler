@@ -5,6 +5,7 @@ import { handler as updateEvent } from "../handlers/update-event.js";
 import { convertDateToDateString } from "../utilities/general.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
 import eventMothers from "./events.mothers.js";
+import { parseEventBody } from "../inputs/parses.js";
 
 describe("Create", () => {
   const event = eventMothers.eventMorning18;
@@ -193,16 +194,16 @@ describe("Abstract", () => {
     });
   });
 
-  // test("Catch Invalid Body", async () => {
-  //   const handler = wrapHandler(async (labmdaEvent) => {
-  //     parseEventBody(labmdaEvent, {});
-  //   });
+  test("Catch Invalid Body", async () => {
+    const handler = wrapHandler(async (labmdaEvent) => {
+      parseEventBody(labmdaEvent, {});
+    });
 
-  //   const response = await handler({
-  //     "body": 'invalid json'
-  //   });
+    const response = await handler({
+      body: "invalid json",
+    });
 
-  //   expect(response).hasStatusCode(400);
-  //   expect(response).hasJSONBodyEquals({ body: ["body is not a valid JSON"] });
-  // });
+    expect(response).hasStatusCode(400);
+    expect(response).hasJSONBodyEquals({ body: ["body is not a valid JSON"] });
+  });
 });

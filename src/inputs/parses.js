@@ -2,21 +2,21 @@ import lodash from "lodash";
 import { pickParcialBy } from "../utilities/general.js";
 import { validate } from "../utilities/validation.js";
 import { keyEventParamSchema } from "./eventsSchemas.js";
-
+import { UserError } from "../utilities/exceptions.js";
 const { identity } = lodash;
 
-const safelyParseJSON = (text) => {
+const safelyParseUserJSON = (text) => {
   try {
     return JSON.parse(text);
   } catch (error) {
     if (error instanceof SyntaxError) {
-      return assembleHandleResponse(400, error.output);
+      throw new UserError({ body: ["body is not a valid JSON"] });
     }
   }
 };
 
 export const parseEventBody = (lambdaEvent, schema) => {
-  const body = JSON.parse(lambdaEvent.body);
+  const body = safelyParseUserJSON(lambdaEvent.body);
   validate(body, schema, "body");
 
   return pickParcialBy(body, {
