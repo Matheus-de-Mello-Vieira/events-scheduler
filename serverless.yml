@@ -30,7 +30,7 @@ stages:
     params:
       NODE_ENV: development
       AWS_REGION: us-east-2
-  master:
+  main:
     params:
       NODE_ENV: production
       AWS_REGION: us-east-1
@@ -60,10 +60,6 @@ functions:
       - httpApi:
           path: /events/{startDateTime}
           method: delete
-          request:
-          parameters:
-            paths:
-              StartDateTime: true
 
 resources:
   Resources:
