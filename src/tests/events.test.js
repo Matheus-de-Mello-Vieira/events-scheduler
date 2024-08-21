@@ -2,10 +2,10 @@ import { handler as createEvent } from "../handlers/create-event.js";
 import { handler as deleteEvent } from "../handlers/delete-event.js";
 import { handler as readEvent } from "../handlers/read-events.js";
 import { handler as updateEvent } from "../handlers/update-event.js";
+import { parseEventBody } from "../inputs/parses.js";
 import { convertDateToDateString } from "../utilities/general.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
 import eventMothers from "./events.mothers.js";
-import { parseEventBody } from "../inputs/parses.js";
 
 describe("Create", () => {
   const event = eventMothers.eventMorning18;
@@ -19,7 +19,7 @@ describe("Create", () => {
       message: "Item created successfully!",
     });
 
-    await event.expectHasEqualOnDatabase();
+    await expect(event).hasEqualOnDatabase()
   });
 
   test("should reject with invalid body", async () => {
@@ -31,7 +31,7 @@ describe("Create", () => {
 
     expect(response).hasStatusCode(400);
 
-    event.expectThereIsNoOnDatabase();
+    await expect(event).not.expectThereIsKeysOnDatabase()
   });
 });
 
@@ -183,7 +183,7 @@ describe("Delete", () => {
 describe("Abstract", () => {
   test("Unexpected Error Catch", async () => {
     const handler = wrapHandler(async (labmdaEvent) => {
-      throw { error: "error" };
+      throw new Error("error");
     });
 
     const response = await handler({});

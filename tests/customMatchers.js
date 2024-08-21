@@ -63,3 +63,19 @@ export async function hasEqualOnDatabase(event) {
     pass: true,
   };
 }
+
+export async function expectThereIsKeysOnDatabase(event) {
+  const onDatabase = await event.queryOnDatabase();
+
+  if (onDatabase === undefined) {
+    return {
+      message: () => `There is not these keys on database`,
+      pass: false,
+    };
+  }
+
+  return {
+    message: () => `There is these keys on database`,
+    pass: true,
+  };
+}

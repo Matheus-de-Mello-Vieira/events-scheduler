@@ -9,17 +9,6 @@ class EventMother {
     this.attributes = attributes;
   }
 
-  async expectHasEqualOnDatabase() {
-    const dto = this.asDto();
-    const onDatabase = await this.queryOnDatabase();
-  }
-
-  async expectThereIsNoOnDatabase() {
-    const onDatabase = await this.queryOnDatabase();
-
-    expect(onDatabase).toBe(undefined);
-  }
-
   async queryOnDatabase() {
     const conn = new AWS.DynamoDB();
 
