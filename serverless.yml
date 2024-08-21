@@ -11,12 +11,12 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
-       - dynamodb:Query
-       - dynamodb:Scan
-       - dynamodb:GetItem
-       - dynamodb:PutItem
-       - dynamodb:UpdateItem
-       - dynamodb:DeleteItem
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
       Resource:
         Fn::GetAtt:
           - EventsTable
@@ -26,11 +26,11 @@ provider:
     NODE_ENV: ${param:NODE_ENV}
 
 stages:
-  dev:
+  develop:
     params:
       NODE_ENV: development
       AWS_REGION: us-east-2
-  prd:
+  master:
     params:
       NODE_ENV: production
       AWS_REGION: us-east-1
@@ -60,11 +60,11 @@ functions:
       - httpApi:
           path: /events/{startDateTime}
           method: delete
-          request: 
-          parameters: 
-             paths: 
-               StartDateTime: true
-          
+          request:
+          parameters:
+            paths:
+              StartDateTime: true
+
 resources:
   Resources:
     EventsTable:
