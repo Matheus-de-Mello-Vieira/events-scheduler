@@ -14,31 +14,35 @@ jobs:
     strategy:
       matrix:
         node-version: [20.x]
-    if: github.ref == 'refs/heads/develop'
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+        if: github.ref == 'refs/heads/develop'
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+        if: github.ref == 'refs/heads/develop'
       - run: npm install
-
       - name: Run DynamoDB
         run: docker run -d -p 8000:8000 amazon/dynamodb-local
+        if: github.ref == 'refs/heads/develop'
 
       - run: npm run coverage
+        if: github.ref == 'refs/heads/develop'
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
+        if: github.ref == 'refs/heads/develop'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
+        if: github.ref == 'refs/heads/develop'
         uses: sonarsource/sonarqube-quality-gate-action@master
-        # Force to fail step after specific time.
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
