@@ -1,28 +1,11 @@
-import lodash from "lodash";
 import { getEvent, updateEvent } from "../data-layer/events.data-mapper.js";
-import { createEventBodySchema } from "../inputs/eventsSchemas.js";
-import { parseEventParams } from "../inputs/parses.js";
-import { pickParcialBy } from "../utilities/general.js";
+import { parseEventBody, parseEventParams } from "../inputs/parses.js";
 import { wrapHandler } from "../utilities/handlerWrapper.js";
 import { getUserId } from "../utilities/request.js";
 import { assembleHandleResponse } from "../utilities/response.js";
-import { validate } from "../utilities/validation.js";
-
-const { identity } = lodash;
-
-const parseBody = (event) => {
-  const body = JSON.parse(event.body);
-  validate(body, createEventBodySchema, "body");
-
-  return pickParcialBy(body, {
-    title: identity,
-    description: identity,
-    endDateTime: (endDateTime) => new Date(endDateTime),
-  });
-};
 
 export const handler = wrapHandler(async (event) => {
-  const body = parseBody(event);
+  const body = parseEventBody(event);
   const params = parseEventParams(event);
   const userId = getUserId();
 
